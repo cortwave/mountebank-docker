@@ -1,0 +1,16 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+    - docker build -t mountebank .
+
+    - if [ -z ${TRAVIS_TAG} ]; then 
+      echo "No push"; 
+      else docker login -u="$DOCKER_USER" -p="$DOCKER_PASS";
+      docker tag mountebank cortwave/mountebank:latest;
+      docker push cortwave/mountebank:latest;
+      docker tag mountebank cortwave/mountebank:$TRAVIS_TAG;
+      docker push cortwave/mountebank:$TRAVIS_TAG; 
+      fi
